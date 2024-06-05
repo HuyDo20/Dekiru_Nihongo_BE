@@ -25,6 +25,10 @@ module.exports = {
 			quiz_type_id: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
+				references: {
+					model: "quiztype",
+					key: "quiz_type_id",
+				},
 			},
 			quiz_status_id: {
 				type: Sequelize.INTEGER,
@@ -33,10 +37,6 @@ module.exports = {
 					model: "status",
 					key: "status_id",
 				},
-			},
-			point: {
-				type: Sequelize.INTEGER,
-				allowNull: false,
 			},
 		});
 	},

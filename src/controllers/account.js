@@ -12,7 +12,7 @@ const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const { generateToken } = require("../middleware/auth");
 const { omitPassword } = require("../helper/user");
-const { INVALID_USER_PASSWORD } = require("../messages/user");
+const { INVALID_USER_PASSWORD, ACCOUNT_LOGIN } = require("../messages/user");
 const {
 	ACCOUNT_UPDATED,
 	ACCOUNT_DELETED,
@@ -51,7 +51,11 @@ async function loginAccount(req, res) {
 			maxAge: 7 * 24 * 60 * 60 * 1000,
 		});
 		userData.token = token;
-		return responseWithData(res, 200, userData);
+		const result = {
+			user: userData,
+			message: ACCOUNT_LOGIN,
+		};
+		return responseWithData(res, 200, result);
 	} catch (err) {
 		console.error("Error during login", err);
 		return error(res);

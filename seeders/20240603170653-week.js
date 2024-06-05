@@ -4,13 +4,15 @@
 module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.bulkInsert(
-			"Course",
+			"Week",
 			[
 				{
-					course_name: "JPD113",
-					description: "First japanese course in FPT University",
-					course_status_id: 2,
-					course_image: "D/course/image/jpd113",
+					
+					week_name: " ",
+					course_id: 1,
+					week_status_id: 2,
+					week_image: " ",
+					week_deadline: 20/10/2023,
 				},
 			],
 			{},
@@ -18,6 +20,6 @@ module.exports = {
 	},
 
 	async down(queryInterface, Sequelize) {
-		await queryInterface.bulkDelete("Course", null, {});
+		await queryInterface.bulkDelete("Week", null, {});
 	},
 };

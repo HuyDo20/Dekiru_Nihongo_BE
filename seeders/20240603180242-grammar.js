@@ -4,13 +4,15 @@
 module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.bulkInsert(
-			"Course",
+			"Grammar",
 			[
 				{
-					course_name: "JPD113",
-					description: "First japanese course in FPT University",
-					course_status_id: 2,
-					course_image: "D/course/image/jpd113",
+					week_id: "1",
+					grammar_name: " ",
+					grammar_structure: " ",
+					grammar_description: " ",
+					grammar_image: " ",
+					grammar_status_id: 2,
 				},
 			],
 			{},
@@ -18,6 +20,6 @@ module.exports = {
 	},
 
 	async down(queryInterface, Sequelize) {
-		await queryInterface.bulkDelete("Course", null, {});
+		await queryInterface.bulkDelete("Grammar", null, {});
 	},
 };

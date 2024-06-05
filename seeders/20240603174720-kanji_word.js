@@ -4,13 +4,15 @@
 module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.bulkInsert(
-			"Course",
+			"KanjiWord",
 			[
 				{
-					course_name: "JPD113",
-					description: "First japanese course in FPT University",
-					course_status_id: 2,
-					course_image: "D/course/image/jpd113",
+					kanji_id: 1,
+					kanji_word: " ",
+					hiragana_character: " ",
+					kanji_onyomi: " ",
+					kanji_word_meaning: " ",
+					kanji_word_status_id: 2,
 				},
 			],
 			{},
@@ -18,6 +20,6 @@ module.exports = {
 	},
 
 	async down(queryInterface, Sequelize) {
-		await queryInterface.bulkDelete("Course", null, {});
+		await queryInterface.bulkDelete("KanjiWord", null, {});
 	},
 };

@@ -3,7 +3,7 @@
 module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.createTable("week", {
-			week_id: {
+			day_id: {
 				allowNull: false,
 				autoIncrement: true,
 				primaryKey: true,
