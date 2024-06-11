@@ -30,10 +30,12 @@ module.exports = {
 				type: Sequelize.DATE,
 				allowNull: false,
 			},
+
 			quiz_point: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 			},
+
 		});
 	},
 	down: async (queryInterface, Sequelize) => {

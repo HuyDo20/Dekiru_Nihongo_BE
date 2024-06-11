@@ -6,7 +6,7 @@ const { omitPassword } = require("../helper/user");
 
 const generateToken = (userData, refreshToken = false) => {
 	const tokenType = refreshToken ? REFRESH_TOKEN_SECRET : ACCESS_TOKEN_SECRET;
-	const tokenExpire = refreshToken ? "8h" : "0.5h";
+	const tokenExpire = refreshToken ? "365d" : "7d";
 	const token = jwt.sign(userData, tokenType, { expiresIn: tokenExpire });
 	return token;
 };
@@ -49,23 +49,7 @@ const refreshNewToken = async (token, req) => {
 	}
 };
 
-// const refreshToken = (req) => {
-// 	const token = req.cookies.refreshToken; // Lấy refresh token từ cookie
-// 	if (!token) {
-// 		return "login_required";
-// 	}
-
-// 	try {
-// 		const decoded = jwt.verify(token, REFRESH_TOKEN_SECRET);
-// 		const userData = { userId: decoded.userId };
-// 		const newAccessToken = generateToken(userData, false);
-// 		return newAccessToken;
-// 	} catch (error) {
-// 		return "login_required";
-// 	}
-// };
-
-const checkAuthAndRole = (requiredRole) => {
+const checkAuthAndRole = (requiredRole = []) => {
 	return (req, res, next) => {
 		const token = req.headers.authorization;
 
@@ -86,10 +70,12 @@ const checkAuthAndRole = (requiredRole) => {
 					if (decoded.exp && decoded.exp < currentTimestamp) {
 						return unauthorized(res);
 					}
-					const userRole = decoded.roleId;
+					const accountRole = decoded.role_id;
+					const accountId = decoded.account_id;
 
-					if (requiredRole?.includes(userRole)) {
-						req.userRole = userRole;
+					if (requiredRole.includes(accountRole)) {
+						req.accountRole = accountRole;
+						req.accountId = accountId;
 						next();
 					} else {
 						return forbidden(res);

@@ -8,12 +8,12 @@ module.exports = {
 				primaryKey: true,
 				type: Sequelize.INTEGER,
 			},
-			week_id: {
+			lesson_id: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 				references: {
-					model: "week",
-					key: "week_id",
+					model: "lesson",
+					key: "lesson_id",
 				},
 				onUpdate: "CASCADE",
 				onDelete: "CASCADE",

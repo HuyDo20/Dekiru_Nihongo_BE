@@ -9,6 +9,7 @@ module.exports = {
 				{
 					course_name: "JPD113",
 					description: "First japanese course in FPT University",
+					week: 10,
 					course_status_id: 2,
 					course_image: "D/course/image/jpd113",
 				},

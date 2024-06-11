@@ -12,7 +12,7 @@ module.exports = {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 				references: {
-					model: "Kanji", 
+					model: "Kanji",
 					key: "kanji_id",
 				},
 				onUpdate: "CASCADE",
@@ -33,6 +33,10 @@ module.exports = {
 			kanji_word_status_id: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
+				references: {
+					model: "status",
+					key: "status_id",
+				},
 			},
 		});
 	},

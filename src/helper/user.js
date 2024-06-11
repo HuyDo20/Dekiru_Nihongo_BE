@@ -1,5 +1,5 @@
 function omitPassword(user) {
-	const { password, refreshToken, ...userWithoutPassword } = user.dataValues;
+	const { password, refresh_token, ...userWithoutPassword } = user.dataValues;
 	return userWithoutPassword;
 }
 

@@ -15,10 +15,12 @@ const ACCOUNT_DELETED = "Xóa tài khoản thành công!";
 
 //logout
 const ACCOUNT_LOGOUT = "Đăng xuất thành công";
+const ACCOUNT_LOGOUT_FAILED = "Có lỗi xảy ra vui lòng thử lại!"
 
 module.exports = {
 	INVALID_PASSWORD,
 	INVALID_USER_PASSWORD,
+	ACCOUNT_LOGOUT_FAILED,
 	ACCOUNT_EXISTED,
 	ACCOUNT_CREATED,
 	ACCOUNT_UPDATED,

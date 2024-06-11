@@ -19,10 +19,5 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: false,
 		},
 	);
-
-	// Status.associate = function (models) {
-	// 	Status.hasMany(models.User, { foreignKey: "StatusId", as: "users" });
-	// };
-
 	return Status;
 };

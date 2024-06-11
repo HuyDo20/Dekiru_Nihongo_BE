@@ -8,12 +8,12 @@ module.exports = {
 				primaryKey: true,
 				type: Sequelize.INTEGER,
 			},
-			week_id: {
+			day_id: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 				references: {
-					model: "Week",
-					key: "week_id",
+					model: "day",
+					key: "day_id",
 				},
 				onUpdate: "CASCADE",
 				onDelete: "CASCADE",
@@ -38,6 +38,11 @@ module.exports = {
 					key: "status_id",
 				},
 			},
+			point: {
+				type: Sequelize.INTEGER,
+				allowNull: false,
+			},
+
 		});
 	},
 	down: async (queryInterface, Sequelize) => {

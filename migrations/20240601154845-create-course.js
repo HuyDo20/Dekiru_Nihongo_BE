@@ -15,6 +15,9 @@ module.exports = {
 			description: {
 				type: Sequelize.STRING,
 			},
+			week: {
+				type: Sequelize.INTEGER,
+			},
 			course_status_id: {
 				type: Sequelize.INTEGER,
 				references: {

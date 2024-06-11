@@ -22,14 +22,6 @@ module.exports = {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
-			option_status_id: {
-				type: Sequelize.INTEGER,
-				allowNull: false,
-				references: {
-					model: "status",
-					key: "status_id",
-				},
-			},
 		});
 	},
 	down: async (queryInterface, Sequelize) => {

@@ -8,9 +8,8 @@ module.exports = {
 			[
 				{
 					kanji_id: 1,
-					kanji_word: " ",
-					hiragana_character: " ",
-					kanji_onyomi: " ",
+					kanji_word: " KW1",
+					hiragana_character: " HC1",
 					kanji_word_meaning: " ",
 					kanji_word_status_id: 2,
 				},

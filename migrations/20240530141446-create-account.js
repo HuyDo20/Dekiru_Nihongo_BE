@@ -47,6 +47,9 @@ module.exports = {
 					key: "status_id",
 				},
 			},
+			refresh_token: {
+				type: Sequelize.TEXT,
+			},
 		});
 	},
 	async down(queryInterface, Sequelize) {

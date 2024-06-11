@@ -12,7 +12,9 @@ const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const { generateToken } = require("../middleware/auth");
 const { omitPassword } = require("../helper/user");
-const { INVALID_USER_PASSWORD, ACCOUNT_LOGIN } = require("../messages/user");
+
+const { INVALID_USER_PASSWORD, ACCOUNT_LOGOUT_FAILED, ACCOUNT_LOGIN } = require("../messages/user");
+
 const {
 	ACCOUNT_UPDATED,
 	ACCOUNT_DELETED,
@@ -42,9 +44,9 @@ async function loginAccount(req, res) {
 		let userData = omitPassword(user);
 		const token = generateToken(userData, false);
 		const refreshToken = generateToken(userData, true);
-		user.refreshToken = refreshToken;
+		user.refresh_token = refreshToken;
 		await user.save();
-		res.cookie("refreshToken", refreshToken, {
+		res.cookie("refresh_token", refreshToken, {
 			httpOnly: true,
 			secure: true,
 			sameSite: "strict",
@@ -58,6 +60,33 @@ async function loginAccount(req, res) {
 		return responseWithData(res, 200, result);
 	} catch (err) {
 		console.error("Error during login", err);
+		return error(res);
+	}
+}
+
+async function logoutAccount(req, res) {
+	try {
+		const { account_id } = req.body;
+		const { accountId } = req;
+		if (accountId?.toString() !== account_id?.toString()) {
+			return forbidden(res);
+		}
+		const user = await Account.findOne({ where: { account_id } });
+		if (!user) {
+			return notfound(res);
+		}
+		const deleteRefreshToken = await Account.update(
+			{ refresh_token: null },
+			{ where: { account_id } },
+		);
+		if (deleteRefreshToken) {
+			res.clearCookie("refresh_token");
+			return ok(res, ACCOUNT_LOGOUT);
+		} else {
+			return badRequest(res, ACCOUNT_LOGOUT_FAILED);
+		}
+	} catch (err) {
+		console.log("Error during logout", err);
 		return error(res);
 	}
 }
@@ -92,12 +121,11 @@ async function registerAccount(req, res) {
 
 async function getListUser(req, res) {
 	try {
-		const { page = 1, pageSize = 10, studentId, email, username } = req.query;
+		const { page = 1, pageSize = 10, email, full_name } = req.query;
 
 		const where = {
-			...(studentId && { studentId: studentId }),
 			...(email && { email: { [Op.like]: `%${email}%` } }),
-			...(username && { username: { [Op.like]: `%${username}%` } }),
+			...(full_name && { full_name: { [Op.like]: `%${full_name}%` } }),
 		};
 
 		const limit = parseInt(pageSize);
@@ -107,46 +135,55 @@ async function getListUser(req, res) {
 			where,
 			limit,
 			offset,
-			attributes: ["id", "username", "email", "studentId", "dob"],
+			attributes: [
+				"account_id",
+				"full_name",
+				"email",
+				"phone_number",
+				"dob",
+				"avatar",
+				"role_id",
+				"point",
+				"status_id",
+			],
 		});
 
 		const response = {
 			data: rows,
-			totalPages: Math.ceil(count / limit),
-			currentPage: parseInt(page),
+			total_pages: Math.ceil(count / limit),
+			current_page: parseInt(page),
 		};
 		return responseWithData(res, 200, response);
 	} catch (err) {
-		console("Error fetching users:", err);
+		console.log("Error fetching users:", err);
 		return error(res);
 	}
 }
 
 async function updateUserById(req, res) {
-	const { username, roleId, dob, studentId, password } = req.body;
-	const { id } = req.params;
-	const userRole = req.userRole;
+	const { full_name, phone_number, dob, avatar, role_id, point, status_id } = req.body;
+	const { account_id } = req.params;
+	const { accountRole, accountId } = req;
 
 	try {
-		const user = await Account.findByPk(id);
+		const user = await Account.findOne({ where: { account_id } });
 		if (!user) {
 			return notfound(res);
 		}
-
-		if (userRole === 1) {
-			user.roleId = roleId;
-			user.studentId = studentId;
-		} else if (userRole === 2 || userRole === 3) {
-			if (roleId && roleId !== user.roleId) {
+		if (accountRole === 1) {
+			user.role_id = role_id;
+		} else if (accountRole === 2 || accountRole === 3 || accountRole === 4) {
+			if (accountId && accountId?.toString() !== account_id?.toString()) {
 				return forbidden(res);
 			}
 		}
-		if (password) {
-			const hashedPassword = await bcrypt.hash(password, 10);
-			user.password = hashedPassword || user.password;
-		}
-		user.username = username || user.username;
+
+		user.full_name = full_name || user.full_name;
 		user.dob = dob || user.dob;
+		user.phone_number = phone_number || user.phone_number;
+		user.avatar = avatar || user.avatar;
+		user.point = point || user.point;
+		user.status_id = status_id || user.status_id;
 
 		await user.save();
 		return ok(res, ACCOUNT_UPDATED);
@@ -158,16 +195,12 @@ async function updateUserById(req, res) {
 
 async function deleteUserById(req, res) {
 	try {
-		const { id } = req.params;
-		const user = await Account.findByPk(id);
-
+		const { account_id } = req.params;
+		const user = await Account.findOne({ where: { account_id } });
 		if (!user) {
 			return notfound(res);
 		}
-
-		user.status = 0;
-		user.deactivationDate = new Date();
-
+		user.status_id = 3;
 		await user.save();
 		return ok(res, ACCOUNT_DELETED);
 	} catch (err) {
@@ -178,22 +211,25 @@ async function deleteUserById(req, res) {
 
 async function getUserById(req, res) {
 	try {
-		const { id } = req.params;
-		const user = await Account.findByPk(id);
+		const { account_id } = req.params;
+		const { accountRole, accountId } = req;
 
+		if (accountRole === 2 || accountRole === 3 || accountRole === 4) {
+			if (accountId && accountId?.toString() !== account_id?.toString()) {
+				return forbidden(res);
+			}
+		}
+
+		const user = await Account.findOne({ where: { account_id } });
 		if (!user) {
 			return notfound(res);
 		}
-
-		res.json(user);
+		const userData = omitPassword(user);
+		return responseWithData(res, 200, userData);
 	} catch (err) {
 		console.error("Error fetching user:", error);
 		return error(err);
 	}
-}
-
-async function logOutAccount(req, res) {
-	return ok(res, ACCOUNT_LOGOUT);
 }
 
 async function registerAccountSystem(req, res) {
@@ -250,6 +286,6 @@ module.exports = {
 	updateUserById,
 	deleteUserById,
 	getUserById,
-	logOutAccount,
 	registerAccountSystem,
+	logoutAccount,
 };

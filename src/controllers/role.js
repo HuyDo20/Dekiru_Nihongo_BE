@@ -1,13 +1,13 @@
 const { Role } = require("../../models");
-const { responseWithData } = require("../handlers/response_handler");
+const { responseWithData, error } = require("../handlers/response_handler");
 
 async function getAllRoles(req, res) {
 	try {
 		const roles = await Role.findAll();
 		return responseWithData(res, 200, roles);
-	} catch (error) {
+	} catch (err) {
 		console.error("Error getting roles:", error);
-		throw error;
+		return error(res);
 	}
 }
 

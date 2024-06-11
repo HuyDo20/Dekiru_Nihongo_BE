@@ -1,24 +1,17 @@
 const express = require("express");
-const {
-	registerAccount,
-	getListUser,
-	updateUserById,
-	deleteUserById,
-	getUserById,
-	logOutAccount,
-	loginAccount,
-} = require("../controllers").account;
+const { registerAccount, getListUser, updateUserById, deleteUserById, getUserById, loginAccount } =
+	require("../controllers").account;
 const { checkAuthAndRole } = require("../middleware/auth");
-const { registerAccountSystem } = require("../controllers/account");
+const { registerAccountSystem, logoutAccount } = require("../controllers/account");
 const router = express.Router();
 
 router.post("/login", loginAccount);
 router.post("/register", registerAccount);
-router.post("/register-account-system", registerAccountSystem)
-router.get("/accounts", checkAuthAndRole([1, 2]), getListUser);
-router.put("/account/:id", checkAuthAndRole([1, 2, 3]), updateUserById);
-router.get("/account/:id", checkAuthAndRole([1, 2, 3]), getUserById);
-router.patch("/account/:id", checkAuthAndRole([1, 2]), deleteUserById);
-router.get("/logout", logOutAccount);
+router.post("/create-account-system", registerAccountSystem);
+router.get("/account", checkAuthAndRole([1]), getListUser);
+router.patch("/account/:account_id", checkAuthAndRole([1]), deleteUserById);
+router.put("/account/:account_id", checkAuthAndRole([1, 2, 3, 4]), updateUserById);
+router.get("/account/:account_id", checkAuthAndRole([1, 2, 3, 4]), getUserById);
+router.post("/logout", checkAuthAndRole([1, 2, 3, 4]), logoutAccount);
 
 module.exports = router;

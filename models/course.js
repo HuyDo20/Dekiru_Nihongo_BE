@@ -1,6 +1,6 @@
 "use strict";
 module.exports = (sequelize, DataTypes) => {
-	const Alphabet = sequelize.define(
+	const Course = sequelize.define(
 		"Course",
 		{
 			course_id: {
@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			description: {
 				type: DataTypes.STRING,
+				allowNull: false,
+			},
+			week: {
+				type: DataTypes.INTEGER,
 				allowNull: false,
 			},
 			course_status_id: {
@@ -36,5 +40,5 @@ module.exports = (sequelize, DataTypes) => {
 		},
 	);
 
-	return Alphabet;
+	return Course;
 };

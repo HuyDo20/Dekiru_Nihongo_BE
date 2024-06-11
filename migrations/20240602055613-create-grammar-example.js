@@ -26,7 +26,7 @@ module.exports = {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
-			grammar_status_id: {
+			grammar_example_status_id: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 				references: {

@@ -8,8 +8,8 @@ module.exports = {
 			[
 				{
 					grammar_id: "1",
-					grammar_example: " ",
-					grammar_example_meaning: " ",
+					grammar_example: " ge1",
+					grammar_example_meaning: "gem1 ",
 					grammar_example_status_id: 2,
 				},
 			],

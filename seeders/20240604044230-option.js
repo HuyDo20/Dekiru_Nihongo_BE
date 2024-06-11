@@ -4,10 +4,10 @@
 module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.bulkInsert(
-			"Vocabulary",
+			"Option",
 			[
 				{
-					option_content: " ",
+					option_content: "OC1",
 					question_id: 1,
 				},
 			],
@@ -16,6 +16,6 @@ module.exports = {
 	},
 
 	async down(queryInterface, Sequelize) {
-		await queryInterface.bulkDelete("Vocabulary", null, {});
+		await queryInterface.bulkDelete("Option", null, {});
 	},
 };
